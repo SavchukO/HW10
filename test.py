@@ -4,21 +4,22 @@ from datetime import datetime, timedelta
 
 class Field:
     def __init__(self, value):
-        self.__value = None  
-        self.value = value
+        self._value = None  # використовуємо _value для внутрішнього представлення атрибута value
+        self.value = value  # використовуємо setter для валідації значення
 
     @property
     def value(self):
-        return self.__value
+        return self._value
 
     @value.setter
     def value(self, new_value):
         if not self.validate(new_value):
-            raise ValueError(f"Invalid value")
-        self.__value = new_value
+            raise ValueError(f"Invalid value for {self.__class__.__name__}")
+        self._value = new_value
 
     def validate(self, value):
-        return True
+        """return boolean from check"""
+        return True  # реалізуємо валідацію у підкласах
 
 
 class Name(Field):
@@ -27,6 +28,7 @@ class Name(Field):
 
 class Phone(Field):
     def validate(self, value):
+        """return boolean from check"""
         return value.isdigit() and len(value) == 10
 
 
@@ -74,7 +76,7 @@ class Record:
             if item.value == phone:
                 self.phones.remove(item)
                 break
-# ДЗ_11. Оператор, що повертає кількість днів до дня народження
+
     def days_to_birthday(self):
         if not self.birthday:
             return None
@@ -96,9 +98,7 @@ class AddressBook(UserDict):
     def delete(self, name: Name):
         if name in self.data:
             del self.data[name]
-            
-# ДЗ_11. ітератор для посторінкового виводу данних телефонної книги
 
-    def iterator(self, n):
-        for i in range(0, len(self.data), n):
-            yield list(self.data.values())[i:i + n]
+    def iterator(self, batch_size=10):
+        for i in range(0, len(self.data), batch_size):
+            yield list(self.data.values())[i:i + batch_size]
