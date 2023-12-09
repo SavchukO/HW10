@@ -26,11 +26,32 @@ class Name(Field):
 
 
 class Phone(Field):
+    
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_value):
+        if not self.validate(new_value):
+            raise ValueError(f"Invalid phone value")
+        self.__value = new_value 
+    
     def validate(self, value):
         return value.isdigit() and len(value) == 10
 
 
 class Birthday(Field):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_value):
+        if not self.validate(new_value):
+            raise ValueError(f"Invalid Birthday format")
+        self.__value = new_value
+    
     def validate(self, value):
         try:
             datetime.strptime(value, "%Y-%m-%d")
